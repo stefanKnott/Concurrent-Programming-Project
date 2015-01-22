@@ -1,86 +1,69 @@
 
 
-
-
+#define _GNU_SOURCE
 #include <sched.h>
+
 #include <pthread.h>
+#include <semaphore.h>
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
 
 #define MUX 0
 #define SEM 1
 #define SPIN 2
 
-pthread mutex_t mutex;
-pthread cond_t start_cv, follow_cv;
+pthread_mutex_t mutex;
+pthread_cond_t start_cv, follow_cv;
 pthread_spinlock_t spin;
-int pshared;
+sem_t semlock;
+
 int count = 0;
-int start_turn = 1;
 
-void *start_mutex(){
-	pthread_mutex_lock(&mutex, NULL);
+void *mux_handler(){
+	usleep(10);
 
-	while(!start_turn){
-		pthread_cond_wait(&start_cv, NULL);
-	}
+	pthread_mutex_lock(&mutex);
 
 	count = count + 1;
-	start_turn = 0;
-
-	pthrad_cond_signal(&follow_cv, NULL);
 
 	pthread_mutex_unlock(&mutex);
 
 	return NULL;
 }
 
-void *follow_mutex(){
-	pthread_mutex_lock(&mutex, NULL);
+void *spin_handler(){
+	usleep(10);
 
-	while(start_turn){
-		pthread_cond_wait(&follow_cv, NULL);
-	}
-
-	count = count + 1;
-	start_turn = 1;
-
-	pthrad_cond_signal(&start_cv, NULL);
-
-	pthread_mutex_unlock(&mutex);
-
-	return NULL;
-}
-
-void *start_spin(){
 	int ret;
 
 	ret = pthread_spin_lock(&spin);
-
-	while(!start_turn){
-		ret = pthread_spin_unlock(&spin);
+	if(ret != 0){
+		fprintf(stderr, "Errot: return code from spin_lock %d\n", ret);
 	}
 
 	count = count + 1;
-	start_turn = 0;
 
 	pthread_spin_unlock(&spin);
 
 	return NULL;
 }
 
-void *follow_spin(){
-	int ret;
+void *sem_handler(){
+	usleep(10);
 
-	ret = pthread_spin_lock(&spin);
-
-	while(!start_turn){
-		ret = pthread_spin_unlock(&spin);
-	}
+	//enter
+	sem_wait(&semlock);
 
 	count = count + 1;
-	start_turn = 0;
 
-	pthread_spin_unlock(&spin);
+	//exit
+	if(sem_post(&semlock) == -1){
+		fprintf(stderr, "Thread failed to unlock semaphore\n");
+	}
 
 	return NULL;
 }
@@ -94,58 +77,77 @@ int main(int argc, char* argv[]){
 		exit(EXIT_FAILURE);
 	}
 
-	num_threads = argv[1]; //test 5, 50, 100 threads
-	num_cores = argv[2]; //test 2, 4, 8 cores
-	lock_type = argv[3]; //0 for mutex and cv, 1 for binary sempahore, 2 for spin lock
+	num_threads = atoi(argv[1]); //test 5, 50, 100 threads
+	num_cores = atoi(argv[2]); //test 2, 4, 8 cores
+	lock_type = atoi(argv[3]); //0 for mutex and cv, 1 for binary sempahore, 2 for spin lock
 
-	pthread_t start_pool[num_threads];
-	pthread_t follow_pool[num_threads];
+	pthread_t pool[num_threads];
 
 	//set number of cores to run on
 	cpu_set_t set;
 	CPU_ZERO(&set);
+
+	int i;
 	for(i = 0; i < num_cores; i++){
 		CPU_SET(i, &set);
 	}
 	sched_setaffinity(0, sizeof(cpu_set_t), &set);
 
 
-	if(lock_type = MUX){
-		if(pthread_mutex_init(&mutex, NULL){
+	if(lock_type == MUX){
+
+		//initialize mutex
+		if(pthread_mutex_init(&mutex, NULL)){
 			fprintf(stderr, "Error initializing mutex!");
 		}
-		if(pthread_cond_init(&cv, NULL)){
-			fprintf(stderr, "Error initializing condition variable!")
-		}
 
-		int i;
 		int rc;
+
 		//initialize thread pools
 		for(i = 0; i < num_threads; i++){
-			rc = pthread_create(&start_pool[i], NULL, start_mux, NULL);
+			rc = pthread_create(&pool[i], NULL, mux_handler, NULL);
 			if(rc){
 				fprintf(stderr, "Error: return code from pthread_create() is %d\n", rc);
 				exit(EXIT_FAILURE);
 			}
+		}
+	}
 
-			rc = pthread_create(&follow_pool[i], NULL, follow_mux, NULL);
+	if(lock_type == SEM){
+		int rc;
+
+		//init semaphore
+		rc = sem_init(&semlock, 0, 1);
+
+		//initialize thread pools
+		for(i = 0; i < num_threads; i++){
+			rc = pthread_create(&pool[i], NULL, sem_handler, NULL);
 			if(rc){
 				fprintf(stderr, "Error: return code from pthread_create() is %d\n", rc);
 				exit(EXIT_FAILURE);
 			}
 		}
 
-	if(lock_type = SEM){
-		//call semaphroe implementations
 	}
 
-	if(lock_type = SPIN){
-		//call spin lock implementations
+	if(lock_type == SPIN){
+		int rc;
+
+		//initialize thread pools
+		for(i = 0; i < num_threads; i++){
+			rc = pthread_create(&pool[i], NULL, spin_handler, NULL);
+			if(rc){
+				fprintf(stderr, "Error: return code from pthread_create() is %d\n", rc);
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
-
-
-		printf("%d", count);
-		assert(count == 2 * num_threads);
+	
+	for(i = 0; i < num_threads; i++){
+		pthread_join(pool[i], NULL);
 	}
-
+		
+	assert(count == num_threads);
+	
+	return 0;
 }
