@@ -1,0 +1,113 @@
+#/!/bin/bash
+
+LOW_THREAD=8
+MED_THREAD=15
+HI_THREAD=30
+
+LOW_CORES=2
+MED_CORES=4
+HI_CORES=8
+
+LOW_CON=40
+HI_CON=1
+
+MUX=0
+SEM=1
+SPIN=2
+TTASB=3
+
+TIMEFORMAT="wall=%e user=%U system=%S CPU=%P i-switched=%c v-switched=%w"
+
+echo Building code..
+gcc -o threading_suite.c threading_suite -lpthread
+
+echo testing..
+#Here all runtimes are equivalent, however you may want to used this TTASB lock as it uses much less CPU power
+echo TTASB tests----------------------------------------------------------------
+echo MED core low Thread low CON
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $MUX $LOW_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SEM $LOW_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SPIN $LOW_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $TTASB $LOW_CON
+
+
+# as CPU set size continues to grow -- spin will remain a good choice
+echo SPIN tests ----------------------------------------------------------------
+echo LOW THREADS MED CORE HI CON------------
+echo MUX 
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $TTASB $HI_CON
+
+echo MED THREADS HI CORE HI CON------------
+echo MUX 
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $TTASB $HI_CON
+
+echo MED THREADS MED CORE HI CON------------
+echo MUX 
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $TTASB $HI_CON
+
+
+#Here the library implementation shines bright..need to use this MUX as it efficiently handles context switches
+echo MUX tests-----------------------------------------------------------------
+echo HI THREADS MED CORE HI CON-------------
+echo MUX 
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $TTASB $HI_CON
+
+echo HI THREADS HI CORE HI CON------------
+echo MUX 
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $TTASB $HI_CON
+
+echo Low core MED Thread HI CON
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $TTASB $HI_CON
+
+echo SEM tests------------------------------------------------------------------
+echo Low core Low Thread HI CON
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $MUX $HI_CON
+echo SEM
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SEM $HI_CON
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SPIN $HI_CON
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $TTASB $HI_CON
+

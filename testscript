@@ -1,0 +1,268 @@
+#/!/bin/bash
+
+LOW_THREAD=8
+MED_THREAD=15
+HI_THREAD=30
+
+LOW_CORES=2
+MED_CORES=4
+HI_CORES=8
+
+LOW_CON=40
+HI_CON=1
+
+MUX=0
+SEM=1
+SPIN=2
+TTASB=3
+
+TIMEFORMAT="wall=%e user=%U system=%S CPU=%P"
+
+echo Building code..
+gcc -o threading_suite.c threading_suite -lpthread
+
+echo LOW THREAD TESTING=========================================================================
+echo LOW CORE LOW THREAD LOW CONTENTION TESTING-------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SPIN $LOW_CON=
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $TTASB $LOW_CON
+
+echo MED CORE LOW THREAD TESTING LOW CONTENTION-------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $TTASB $LOW_CON
+
+echo HIGH CORE LOW THREAD TESTING LOW CONTENTION------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $TTASB $LOW_CON
+
+echo LOW CORE LOW THREAD TESTING HIGH CONTENTION------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $LOW_CORES $TTASB $HI_CON
+
+
+echo MED CORE LOW THREAD TESTING HIGH CONTENTION------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $MED_CORES $TTASB $HI_CON
+
+echo HIGH CORE LOW THREAD TESTING HIGH CONTENTION-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $LOW_THREAD $HI_CORES $TTASB $HI_CON
+
+echo MEDIUM THREAD TESTING=====================================================================
+echo LOW CORE MED THREAD LOW CONTENTION TESTING-------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SEM $LOW_CON
+
+echo SPIN
+#/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SPIN $LOW_CON
+
+echo TTASB
+#/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $TTASB $LOW_CON
+
+
+echo MED CORE MED THREAD TESTING LOW CONTENTION------------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $TTASB $LOW_CON
+
+
+echo HIGH CORE MED THREAD TESTING LOW CONTENTION-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $TTASB $LOW_CON
+
+echo LOW CORE MED THREAD TESTING HIGH CONTENTION-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $LOW_CORES $TTASB $HI_CON
+
+
+echo MED CORE MED THREAD TESTING HIGH CONTENTION-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $MED_CORES $TTASB $HI_CON
+
+
+echo HIGH CORE MED THREAD TESTING HIGH CONTENTION----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $MED_THREAD $HI_CORES $TTASB $HI_CON
+
+echo HIGH THREAD TESTING======================================================================
+echo LOW CORE HIGH THREAD LOW CONTENTION TESTING-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $TTASB $LOW_CON
+
+
+echo MED CORE HIGH THREAD TESTING LOW CONTENTION-----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $TTASB $LOW_CON
+
+
+echo HIGH CORE HIGH THREAD TESTING LOW CONTENTION----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $MUX $LOW_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SEM $LOW_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SPIN $LOW_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $TTASB $LOW_CON
+
+echo LOW CORE HIGH THREAD TESTING HIGH CONTENTION----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $LOW_CORES $TTASB $HI_CON
+
+
+echo MED CORE HIGH THREAD TESTING HIGH CONTENTION----------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $MED_CORES $TTASB $HI_CON
+
+
+echo HIGH CORE HIGH THREAD TESTING HIGH CONTENTION---------------------------------------------
+echo MUX
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $MUX $HI_CON
+
+echo SEMAPHORE
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SEM $HI_CON
+
+echo SPIN
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $SPIN $HI_CON
+
+echo TTASB
+/usr/bin/time -f "$TIMEFORMAT" ./threading_suite $HI_THREAD $HI_CORES $TTASB $HI_CON
