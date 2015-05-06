@@ -19,7 +19,7 @@ TTASB=3
 TIMEFORMAT="wall=%e user=%U system=%S CPU=%P"
 
 echo Building code..
-gcc -o threading_suite.c threading_suite -lpthread
+make
 
 echo LOW THREAD TESTING=========================================================================
 echo LOW CORE LOW THREAD LOW CONTENTION TESTING-------------------------------------------------

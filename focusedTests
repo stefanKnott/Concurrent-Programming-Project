@@ -19,7 +19,7 @@ TTASB=3
 TIMEFORMAT="wall=%e user=%U system=%S CPU=%P i-switched=%c v-switched=%w"
 
 echo Building code..
-gcc -o threading_suite.c threading_suite -lpthread
+make
 
 echo testing..
 #Here all runtimes are equivalent, however you may want to used this TTASB lock as it uses much less CPU power
