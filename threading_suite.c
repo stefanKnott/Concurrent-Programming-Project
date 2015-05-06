@@ -140,7 +140,6 @@ int main(int argc, char* argv[]){
 	switch(lock_type){
 		case MUX:
 			pthread_mutex_init(&mutex, NULL);
-			pthread_cond_init(&cv, NULL);
 			break;
 		case SEM:
 			pshared = 0;
